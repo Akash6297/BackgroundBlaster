@@ -1,11 +1,65 @@
 body {
-    background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  z-index: 100;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.menu a {
+  margin-right: 15px;
+  color: #333;
+  text-decoration: none;
+}
+
+.menu a.active {
+  font-weight: bold;
+}
+
+.burger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  margin: 3px 0;
+}
+
+.content {
+  padding: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .menu {
+    display: none;
   }
-  
-  .navbar {
-    position: sticky;
-    top: 0;
-    z-index: 999;
+
+  .burger {
+    display: flex;
+  }
+}
+
+
+body {
+    background-color: #f8f9fa;
   }
   
   .container {
@@ -123,31 +177,6 @@ header {
   padding: 20px 0;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-
-.menu {
-  list-style: none;
-  display: flex;
-}
-
-.menu li {
-  margin-right: 20px;
-}
-
-.menu a {
-  color: #fff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.menu a:hover {
-  color: #ff9900;
-}
-
 /* Hero section styles */
 .hero {
   background-image: url("background.jpg");
@@ -172,68 +201,4 @@ header {
   50% {
     opacity: 1;
   }
-}
-
-
-/* nav bar  */
-.logo{
-  width: 20%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo img{
-  width: 26%;
-  border: 3px solid white;
-  border-radius: 50px;
-  margin: 5px;
-
-}
-
-.navbar{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  cursor: pointer;
-  background: #ff9900;
-}
-
-.nav-list{
-  width: 70%;
-  display: flex;
-  align-items: center;
-}
-
-.nav-list li{
-  list-style: none;
-  padding: 26px 30px;
-}
-
-.nav-list li a{
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-  font-family:  'Ubuntu Condensed', sans-serif;
-}
-
-.nav-list li a:hover{
-  text-decoration: none;
-  color: gray;
-}
-
-.nav-list li a::after{
-  content: '';
-  width: 0;
-  height: 2px;
-  background: #f44336;
-  display: block;
-  margin: auto;
-  transition: 0.5s;
-}
-
-.nav-list li a:hover::after{
-  width: 100%;
 }
