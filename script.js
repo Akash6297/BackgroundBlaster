@@ -67,3 +67,32 @@ function submitForm(event) {
     var menu = document.querySelector('.menu');
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
   }
+
+  // Add this JavaScript code
+document.addEventListener("DOMContentLoaded", function() {
+  var popupContainer = document.querySelector(".popup-container");
+  var popupCloseBtn = document.querySelector(".popup-close-btn");
+
+  // Close the popup when the close button is clicked
+  popupCloseBtn.addEventListener("click", function() {
+    closePopup();
+  });
+
+  // Close the popup when clicking outside the popup container
+  popupContainer.addEventListener("click", function(e) {
+    if (e.target === popupContainer) {
+      closePopup();
+    }
+  });
+
+  // Show the popup when the page is loaded
+  showPopup();
+
+  function showPopup() {
+    popupContainer.style.display = "flex";
+  }
+
+  function closePopup() {
+    popupContainer.style.display = "none";
+  }
+});
