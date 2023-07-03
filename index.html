@@ -3,61 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BackgroundBlaster </title>
+  <title>BackgroundBlaster</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">BackgroundBlaster </a>
-  </nav>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <form>
-          <div class="form-group">
-            <label for="filepicker">Select a file:</label>
-            <input class="form-control" id="filepicker" type="file">
-          </div>
-          <button class="btn btn-primary" onclick="handleUpload()" type="button">Upload</button>
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="output-img">
-          <img id="outputImg" src="" alt="Click on the Upload Button to get the Output Image">
-        </div>
-        <div class="download-btn">
-          <button class="btn btn-secondary" onclick="downloadFile()">Download</button>
-        </div>
-      </div>
-    </div>
-    <section id="contact">
+  <header>
+    <nav>
       <div class="container">
-        <h2>Contact Us</h2>
-        <form action="mailto:akashmandal6297@gmail.com" method="post" enctype="text/plain">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          <div class="form-group">
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
-          </div>
-          <button type="submit" class="btn-submit">Submit</button>
-        </form>
+        <h1 class="logo">BackgroundBlaster</h1>
+       
+        <ul class="menu">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <!-- <li><a href="#menu">Menu</a></li> -->
+          <li><a href="#contact">Contact</a></li>
+        </ul>
       </div>
-    </section>
-  </div>
+    </nav>
+    <div class="hero">
+      <h1 class="animated-text">Remove Background in just One click</h1>
+    </div>
+  </header>
 
-  <footer class="footer mt-auto py-3 bg-light">
+  <section id="upload" class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <form>
+            <div class="form-group">
+              <label for="filepicker">Select a file:</label>
+              <input class="form-control" id="filepicker" type="file">
+            </div>
+            <div class="download-btn">
+            <button class="btn btn-primary" onclick="handleUpload()" type="button">Upload</button>
+            <br>
+            <strong> Click on the Upload Button to get the Output Image</strong>
+            </div>  
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="output-img">
+            <img id="outputImg" src="" alt="Output Image">
+          </div>
+          <div class="download-btn">
+            <button class="btn-submit" onclick="downloadFile()">Download</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="bg-white">
+    <div class="container">
+      <h2>About Us</h2>
+      <div class="about-content">
+        <img src="BackgroundBlaster.png" alt="About Image" class="about-image">
+        <div class="about-text">
+          <h3>Welcome to Food Delivery</h3>
+    
+          <p class="abc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p class="abc">Nunc rhoncus, libero et pretium efficitur, leo ex auctor metus, a eleifend sem magna vitae mauris. Donec vitae eros turpis. Morbi ultrices rutrum blandit. Sed eget mauris consectetur, aliquet felis nec, ultrices lacus.</p>
+          <p class="abc">Sed lacinia ligula nec ex rutrum commodo. Phasellus mattis, sem eget egestas iaculis, orci turpis congue dolor, vitae eleifend lectus urna eget quam. In hac habitasse platea dictumst.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="bg-white">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <form action="mailto:akashmandal6297@gmail.com" method="post" enctype="text/plain">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message:</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Submit</button>
+      </form>
+    </div>
+  </section>
+<br><br><br><br>
+  <footer class="footer mt-auto py-3 bg-dark">
     <div class="container">
       <div class="row">
         <div class="col-md-12 text-center">
@@ -72,7 +110,7 @@
               <a href="https://example.com"><i class="fab fa-instagram"></i></a>
             </li>
           </ul>
-          <p class="mb-0">&copy; 2023 Your Website. All rights reserved.</p>
+          <p class="mb-0" >&copy; 2023 Your Website. All rights reserved.</p>
           <p class="mb-0">Thank you for visiting!</p>
         </div>
       </div>
