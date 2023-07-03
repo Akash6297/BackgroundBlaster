@@ -1,35 +1,55 @@
 # BackgroundBlaster
-# Remove Background Web Application
 
-This web application allows users to easily remove the background from an image and download the resulting image with a transparent background. It utilizes the Remove.bg API to perform the background removal.
+BackgroundBlaster is a website that allows users to easily remove the background from their photos with just one click. It provides a simple and user-friendly interface for uploading images and obtaining the output image without the background.
 
-## Demo
+## Live Website
 
-You can see a live demo of the web application [here](https://your-website-url.com).
+Check out the live website [here](http://akash-mandal.me/BackgroundBlaster).
+
+## Repository
+
+The code for BackgroundBlaster can be found in this [GitHub repository](https://github.com/Akash6297/BackgroundBlaster).
 
 ## Features
 
-- Select an image file from your local device.
-- Upload the image and remove the background using the Remove.bg API.
-- View the image with the background removed.
-- Download the resulting image with a transparent background.
+- Upload your photo and remove the background in just one click
+- Download the output image without the background
+- Learn more about the website and its creator in the About section
+- Contact the website owner using the Contact Us form
 
 ## Technologies Used
 
 - HTML
 - CSS
 - JavaScript
-- Bootstrap 4
-- Remove.bg API
+- Bootstrap
+- Font Awesome
 
 ## Usage
 
-1. Clone the repository:
+To use BackgroundBlaster locally, follow these steps:
 
-```shell
-git clone https://github.com/your-username/your-repository.git
-const apiKey = "YOUR_REMOVE_BG_API_KEY";
+1. Clone this repository: `git clone https://github.com/Akash6297/BackgroundBlaster.git`
+2. Open the index.html file in a web browser.
 
-Make sure to replace the necessary placeholders such as `your-website-url.com`, `YOUR_REMOVE_BG_API_KEY`, `your-username`, `your-repository`, `Your Name`, and `your-email@example.com` with the appropriate information for your project.
+## Screenshots
 
-Feel free to customize the content as needed to provide more specific details about your project.
+Include some screenshots of the website here to showcase its design and functionality.
+
+## Contributing
+
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+## Contact
+
+If you have any questions or feedback, feel free to contact the project owner:
+
+- Name: Akash Mandal
+- Email: akashmandal6297@gmail.com
+- Twitter: [@akashma36499324](https://twitter.com/akashma36499324)
+
+Thank you for visiting BackgroundBlaster!
