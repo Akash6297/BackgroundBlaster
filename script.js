@@ -28,6 +28,22 @@ function handleUpload() {
   .catch(function(error) {
     console.log(error);
   });
+// handle progress bar
+  var progressBar = document.getElementById("progressBar");
+  progressBar.style.width = "0%";
+
+  // Simulating the upload progress
+  var progress = 0;
+  var interval = setInterval(function() {
+    progress += 10;
+    progressBar.style.width = progress + "%";
+    progressBar.innerHTML = progress + "%";
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      progressBar.innerHTML = "Upload Complete";
+    }
+  }, 500);
 }
 
 function downloadFile() {
