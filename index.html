@@ -3,145 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BackgroundBlaster</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <title>BackgroundBlaster | Pro Passport Editor</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/png" href="BackgroundBlaster.png">
+  
+  <!-- Fabric.js for Canvas Editing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
 <body>
 
-<nav class="navbar">
-  <div class="logo">
-    <img src="BackgroundBlaster.png" alt="Logo" class="logo-img">
-  </div>
-  <div class="menu">
-    <a href="#home" class="active">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <div class="burger" onclick="toggleMenu()">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
-</nav>
-  <header id="home">
-   
-    <div class="hero">
-      <h1 class="animated-text">Remove Background in just One click</h1>
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="BackgroundBlaster.png" alt="Logo" class="logo-img">
+        <span class="logo-text">BackgroundBlaster</span>
+      </div>
+      <div class="menu" id="menu">
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#upload" class="nav-link">Try Editor</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+      <div class="burger" id="burger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header id="home" class="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Erase Backgrounds & Create <span class="gradient-text">Pro Photos</span></h1>
+      <p class="hero-subtitle">Instantly remove backgrounds, change colors, and add professional attire to craft perfect passport-size photos with zero effort.</p>
+      <a href="#upload" class="btn btn-primary btn-glow">Open Editor <i class="fa-solid fa-arrow-right"></i></a>
     </div>
   </header>
-  <div class="popup-container">
-    <div class="popup">
-      <!-- <img src="BackgroundBlaster.png" alt="Your Photo" class="circle-photo"> -->
-      <img src="BackgroundBlaster.png" alt="About Image" class="about-image">
-      <h2>Welcome to BackgroundBlaster</h2>
-      <p class="abc">This is a website where you can easily remove the background from your photo in just one click.</p>
-      
-      <p class="abc">Follow Us !!</p>
-    <div class="social-handles">
-      <a class="abc" href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank"><i class="fab fa-facebook"></i></a>
-      <a class="abc" href="https://twitter.com/akashma36499324" target="_blank"><i class="fab fa-twitter"></i></a>
-      <a class="abc" href="https://instagram.com/@photos_by_akash" target="_blank"><i class="fab fa-instagram"></i></a>
-    </div>
-    <button class="popup-close-btn" onclick="closePopup()">Close</button>
-    </div>
-  </div>
 
-  <section id="upload" class="bg-light">
+  <!-- Main Application Area -->
+  <section id="upload" class="app-section">
     <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <form>
-            <div class="form-group">
-              <label for="filepicker">Select a file:</label>
-              <input class="form-control" id="filepicker" type="file">
+      <div class="section-header">
+        <h2>Professional Photo Editor</h2>
+        <p>Upload your image, change backgrounds, and add professional clothing instantly.</p>
+      </div>
+
+      <div class="app-grid">
+        <!-- Input Panel -->
+        <div class="glass-card input-panel">
+          <div class="drop-zone" id="drop-zone">
+            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+            <h3>Drag & Drop your image here</h3>
+            <p>or</p>
+            <label for="filepicker" class="btn btn-secondary">Browse Files</label>
+            <input type="file" id="filepicker" accept="image/png, image/jpeg, image/webp" hidden>
+            <p id="file-name" class="file-name"></p>
+          </div>
+          <button id="upload-btn" class="btn btn-action" disabled>
+            <span class="btn-text" id="upload-btn-text">Remove Background & Edit</span>
+            <span class="spinner" id="btn-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+          </button>
+          
+          <div class="editor-tools hidden" id="editor-tools">
+            <hr class="divider">
+            <h3 class="tools-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Editing Tools</h3>
+            
+            <div class="toolbar-group">
+              <h4>1. Choose Background</h4>
+              <div class="color-options">
+                <button class="color-btn active" data-color="transparent" style="background: repeating-linear-gradient(45deg, #ccc 0px, #ccc 5px, #fff 5px, #fff 10px);" title="Transparent"></button>
+                <button class="color-btn" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
+                <button class="color-btn" data-color="#1e3a8a" style="background: #1e3a8a;" title="Passport Blue"></button>
+                <button class="color-btn" data-color="#ef4444" style="background: #ef4444;" title="Red"></button>
+                <button class="color-btn" data-color="#4b5563" style="background: #4b5563;" title="Grey"></button>
+                <label for="custom-color-picker" class="custom-color-lbl" title="Custom"><i class="fa-solid fa-palette"></i></label>
+                <input type="color" id="custom-color-picker" class="color-picker hidden">
+              </div>
             </div>
-            <div class="download-btn">
-            <button class="btn btn-primary" onclick="handleUpload()" type="button">Upload</button>
-            <br>
-            <strong> Click on the Upload Button to get the Output Image</strong>
-            <div class="progress">
-              <div class="progress-bar" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            
+            <div class="toolbar-group">
+              <h4>2. Dimensions & Crop</h4>
+              <div class="size-options">
+                <button class="btn btn-outline size-btn active" data-ratio="original">Original</button>
+                <button class="btn btn-outline size-btn" data-ratio="1:1" data-width="600" data-height="600">US 2x2"</button>
+                <button class="btn btn-outline size-btn" data-ratio="35:45" data-width="413" data-height="531">Std 35x45mm</button>
+              </div>
+              <small class="helper-text">Changes aspect ratio. You can drag & resize your photo to fit perfectly.</small>
             </div>
-          </form>
-        </div>  
-        
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="output-img">
-            <img id="outputImg" src="" alt="Output Image">
+            
           </div>
-          <div class="download-btn">
-            <button class="btn-submit" onclick="downloadFile()">Download</button>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="glass-card output-panel">
+          <div class="result-container" id="result-container">
+            <div class="placeholder" id="output-placeholder">
+              <i class="fa-solid fa-image placeholder-icon"></i>
+              <p>Your workspace will appear here</p>
+            </div>
+            
+            <!-- Canvas Wrapper for FabricJS -->
+            <div id="canvas-wrapper" class="hidden">
+              <canvas id="editor-canvas"></canvas>
+            </div>
+            
+            <div class="loading-overlay hidden" id="loading-overlay">
+              <div class="loader"></div>
+              <p>Removing background via AI...</p>
+            </div>
+          </div>
+          
+          <div class="action-bar hidden" id="action-bar">
+            <button id="download-btn" class="btn btn-success btn-block"><i class="fa-solid fa-download"></i> Save HD Photo</button>
+            <button id="reset-btn" class="btn btn-outline"><i class="fa-solid fa-rotate-right"></i> Reset App</button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="about" class="bg-white">
+  <!-- About Section -->
+  <section id="about" class="about-section">
     <div class="container">
-      <h2>About Us</h2>
-      <div class="about-content">
-        <img src="BackgroundBlaster.png" alt="About Image" class="about-image">
-        <div class="about-text">
-          <h3>Welcome to BackgroundBlaster</h3>
-    
-          <p class="abc">This is a website where you can easily remove background from your Photo in just one click.</p>
-          <p class="abc">The Website is created By - <strong>Akash Mandal</strong> </p>
-          <p class="abc">If you have any query please fill free you ask Your question using the contact from. We are happy to help you. </p>
+      <div class="glass-card about-card">
+        <div class="about-grid">
+          <div class="about-image-container">
+            <img src="BackgroundBlaster.png" alt="Akash Mandal" class="about-image">
+            <div class="glow-effect"></div>
+          </div>
+          <div class="about-text">
+            <h2>About BackgroundBlaster</h2>
+            <p>BackgroundBlaster is a cutting-edge tool designed to make image editing effortless. Whether you're a professional designer or just looking to create a quick passport photo for official use, our AI-powered background removal and professional editor provides pixel-perfect results in seconds.</p>
+            <p>Created with passion by <strong>Akash Mandal</strong>, blending stunning visuals with powerful utility.</p>
+            
+            <div class="social-handles">
+              <span class="follow-text">Connect with me:</span>
+              <a href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://twitter.com/akashma36499324" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
+              <a href="https://instagram.com/@photos_by_akash" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="contact" class="bg-white">
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section">
     <div class="container">
-      <h2>Contact Us</h2>
-      <form action="mailto:akashmandal6297@gmail.com" method="post" enctype="text/plain">
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="message">Message:</label>
-          <textarea id="message" name="message" rows="4" required></textarea>
-        </div>
-        <button type="submit" class="btn-submit">Submit</button>
-      </form>
+      <div class="section-header">
+        <h2>Get In Touch</h2>
+        <p>Have a question or feedback? We'd love to hear from you.</p>
+      </div>
+
+      <div class="glass-card contact-card">
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user input-icon"></i>
+              <input type="text" id="name" name="name" placeholder="John Doe" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Your Email</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope input-icon"></i>
+              <input type="email" id="email" name="email" placeholder="john@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <div class="input-wrapper align-top">
+              <i class="fa-solid fa-comment input-icon"></i>
+              <textarea id="message" name="message" rows="4" placeholder="How can we help you?" required></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
     </div>
   </section>
-<br><br><br><br>
-  <footer class="footer mt-auto py-3 bg-dark">
+
+  <!-- Footer -->
+  <footer class="footer">
     <div class="container">
-      <div class="row">
-        <div class="col-md-12 text-center">
-          <ul class="list-inline">
-            <li class="list-inline-item">
-              <a href="https://www.facebook.com/profile.php?id=100041998442913"><i class="fab fa-facebook"></i></a>
-            </li>
-            <li class="list-inline-item">
-              <a href="https://twitter.com/akashma36499324"><i class="fab fa-twitter"></i></a>
-            </li>
-            <li class="list-inline-item">
-              <a href="https://instagram.com/@photos_by_akash"><i class="fab fa-instagram"></i></a>
-            </li>
-          </ul>
-          <p class="mb-0" >&copy; 2023 Your Website. All rights reserved.</p>
-          <p class="mb-0">Thank you for visiting!</p>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="BackgroundBlaster.png" alt="Logo" width="30">
+          <span>BackgroundBlaster</span>
         </div>
+        <div class="footer-links">
+          <a href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="https://twitter.com/akashma36499324" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a href="https://instagram.com/@photos_by_akash" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 BackgroundBlaster by Akash Mandal. All rights reserved.</p>
       </div>
     </div>
   </footer>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast hidden">
+    <i id="toast-icon" class="fa-solid fa-circle-info"></i>
+    <span id="toast-message">Notification message</span>
+  </div>
 
   <script src="script.js"></script>
 </body>
