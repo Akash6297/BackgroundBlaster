@@ -3,223 +3,502 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BackgroundBlaster | Pro Passport Editor</title>
-  
+  <title>BackgroundBlaster — Free AI Background Remover &amp; Passport Photo Maker</title>
+  <meta name="description" content="Remove image backgrounds in seconds, change the background colour, create passport and visa photos, and download as PNG, JPG, WEBP or BMP. Free and no sign-up.">
+  <meta name="theme-color" content="#4f46e5">
+  <meta property="og:title" content="BackgroundBlaster — Free AI Background Remover">
+  <meta property="og:description" content="Remove backgrounds, make passport photos and export to any image format — right in your browser.">
+  <meta property="og:image" content="BackgroundBlaster.png">
+  <link rel="icon" type="image/png" href="BackgroundBlaster.png">
+
+  <!-- Apply saved theme before first paint (prevents a flash) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('bb-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/png" href="BackgroundBlaster.png">
-  
-  <!-- Fabric.js for Canvas Editing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 </head>
 <body>
 
-  <!-- Navigation -->
+  <!-- ================= NAVBAR ================= -->
   <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <div class="logo">
-        <img src="BackgroundBlaster.png" alt="Logo" class="logo-img">
-        <span class="logo-text">BackgroundBlaster</span>
-      </div>
-      <div class="menu" id="menu">
-        <a href="#home" class="nav-link active">Home</a>
-        <a href="#upload" class="nav-link">Try Editor</a>
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="BackgroundBlaster home">
+        <img src="BackgroundBlaster.png" alt="" class="brand-logo" width="32" height="32">
+        <span class="brand-name">Background<span>Blaster</span></span>
+      </a>
+
+      <div class="nav-links" id="nav-links">
+        <a href="#how" class="nav-link">How it works</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#faq" class="nav-link">FAQ</a>
         <a href="#about" class="nav-link">About</a>
         <a href="#contact" class="nav-link">Contact</a>
       </div>
-      <div class="burger" id="burger">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+
+      <div class="nav-actions">
+        <button class="icon-btn" id="settings-btn" type="button" aria-label="API settings" title="API settings">
+          <i class="fa-solid fa-key"></i>
+        </button>
+        <button class="icon-btn" id="theme-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button class="btn btn-primary btn-sm nav-cta" type="button" data-action="pick-file">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload image
+        </button>
+        <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <header id="home" class="hero">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="hero-content">
-      <h1 class="hero-title">Erase Backgrounds & Create <span class="gradient-text">Pro Photos</span></h1>
-      <p class="hero-subtitle">Instantly remove backgrounds, change colors, and add professional attire to craft perfect passport-size photos with zero effort.</p>
-      <a href="#upload" class="btn btn-primary btn-glow">Open Editor <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
-  </header>
-
-  <!-- Main Application Area -->
-  <section id="upload" class="app-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Professional Photo Editor</h2>
-        <p>Upload your image, change backgrounds, and add professional clothing instantly.</p>
-      </div>
-
-      <div class="app-grid">
-        <!-- Input Panel -->
-        <div class="glass-card input-panel">
-          <div class="drop-zone" id="drop-zone">
-            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
-            <h3>Drag & Drop your image here</h3>
-            <p>or</p>
-            <label for="filepicker" class="btn btn-secondary">Browse Files</label>
-            <input type="file" id="filepicker" accept="image/png, image/jpeg, image/webp" hidden>
-            <p id="file-name" class="file-name"></p>
-          </div>
-          <button id="upload-btn" class="btn btn-action" disabled>
-            <span class="btn-text" id="upload-btn-text">Remove Background & Edit</span>
-            <span class="spinner" id="btn-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
-          </button>
-          
-          <div class="editor-tools hidden" id="editor-tools">
-            <hr class="divider">
-            <h3 class="tools-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Editing Tools</h3>
-            
-            <div class="toolbar-group">
-              <h4>1. Choose Background</h4>
-              <div class="color-options">
-                <button class="color-btn active" data-color="transparent" style="background: repeating-linear-gradient(45deg, #ccc 0px, #ccc 5px, #fff 5px, #fff 10px);" title="Transparent"></button>
-                <button class="color-btn" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
-                <button class="color-btn" data-color="#1e3a8a" style="background: #1e3a8a;" title="Passport Blue"></button>
-                <button class="color-btn" data-color="#ef4444" style="background: #ef4444;" title="Red"></button>
-                <button class="color-btn" data-color="#4b5563" style="background: #4b5563;" title="Grey"></button>
-                <label for="custom-color-picker" class="custom-color-lbl" title="Custom"><i class="fa-solid fa-palette"></i></label>
-                <input type="color" id="custom-color-picker" class="color-picker hidden">
-              </div>
-            </div>
-            
-            <div class="toolbar-group">
-              <h4>2. Dimensions & Crop</h4>
-              <div class="size-options">
-                <button class="btn btn-outline size-btn active" data-ratio="original">Original</button>
-                <button class="btn btn-outline size-btn" data-ratio="1:1" data-width="600" data-height="600">US 2x2"</button>
-                <button class="btn btn-outline size-btn" data-ratio="35:45" data-width="413" data-height="531">Std 35x45mm</button>
-              </div>
-              <small class="helper-text">Changes aspect ratio. You can drag & resize your photo to fit perfectly.</small>
-            </div>
-            
-          </div>
+  <main>
+    <!-- ================= HERO + UPLOAD ================= -->
+    <section id="home" class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="pill"><i class="fa-solid fa-bolt"></i> Free · No sign-up · AI-powered</span>
+          <h1>Remove image backgrounds <span class="text-gradient">in seconds</span></h1>
+          <p class="lead">Upload a photo and get a clean cutout automatically. Change the background, make passport &amp; visa photos, and download in any format.</p>
+          <ul class="check-list">
+            <li><i class="fa-solid fa-circle-check"></i> Passport, visa &amp; social media sizes</li>
+            <li><i class="fa-solid fa-circle-check"></i> Solid colour, blur or custom backgrounds</li>
+            <li><i class="fa-solid fa-circle-check"></i> Download as PNG, JPG, WEBP, BMP or a print sheet</li>
+          </ul>
         </div>
 
-        <!-- Output Panel -->
-        <div class="glass-card output-panel">
-          <div class="result-container" id="result-container">
-            <div class="placeholder" id="output-placeholder">
-              <i class="fa-solid fa-image placeholder-icon"></i>
-              <p>Your workspace will appear here</p>
-            </div>
-            
-            <!-- Canvas Wrapper for FabricJS -->
-            <div id="canvas-wrapper" class="hidden">
-              <canvas id="editor-canvas"></canvas>
-            </div>
-            
-            <div class="loading-overlay hidden" id="loading-overlay">
-              <div class="loader"></div>
-              <p>Removing background via AI...</p>
-            </div>
+        <div class="upload-card" id="upload-card">
+          <div class="dropzone" id="dropzone">
+            <div class="dropzone-icon"><i class="fa-solid fa-image"></i></div>
+            <button type="button" class="btn btn-primary btn-lg" data-action="pick-file">
+              <i class="fa-solid fa-arrow-up-from-bracket"></i> Upload image
+            </button>
+            <p class="dropzone-hint">or drop a file here, or paste with <kbd>Ctrl</kbd> + <kbd>V</kbd></p>
+            <p class="dropzone-meta">JPG, PNG, WEBP, GIF, BMP · up to 40&nbsp;MB</p>
           </div>
-          
-          <div class="action-bar hidden" id="action-bar">
-            <button id="download-btn" class="btn btn-success btn-block"><i class="fa-solid fa-download"></i> Save HD Photo</button>
-            <button id="reset-btn" class="btn btn-outline"><i class="fa-solid fa-rotate-right"></i> Reset App</button>
+          <div class="upload-trust">
+            <span><i class="fa-solid fa-lock"></i> Not stored</span>
+            <span><i class="fa-solid fa-gauge-high"></i> ~5 seconds</span>
+            <span><i class="fa-solid fa-mobile-screen"></i> Works on mobile</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- About Section -->
-  <section id="about" class="about-section">
-    <div class="container">
-      <div class="glass-card about-card">
-        <div class="about-grid">
-          <div class="about-image-container">
-            <img src="BackgroundBlaster.png" alt="Akash Mandal" class="about-image">
-            <div class="glow-effect"></div>
+    <!-- ================= EDITOR ================= -->
+    <section id="editor" class="editor-section" hidden>
+      <div class="container">
+        <div class="editor-header">
+          <div class="editor-title">
+            <h2>Editor</h2>
+            <span class="file-name" id="file-name"></span>
+            <span class="status-chip" id="status-chip" hidden></span>
           </div>
+          <div class="editor-header-actions">
+            <button type="button" class="btn btn-ghost btn-sm" data-action="pick-file">
+              <i class="fa-solid fa-plus"></i> New image
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="quick-download" disabled>
+              <i class="fa-solid fa-download"></i> Download
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-grid">
+          <!-- Stage -->
+          <div class="card stage-card">
+            <div class="stage-toolbar" id="stage-toolbar">
+              <div class="toolbar-group">
+                <button type="button" class="tool-btn" id="compare-btn" aria-pressed="false" title="Show the original photo">
+                  <i class="fa-solid fa-eye"></i><span>Original</span>
+                </button>
+                <button type="button" class="tool-btn" id="fit-btn" title="Automatically position the subject">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i><span>Auto-fit</span>
+                </button>
+                <button type="button" class="tool-btn" id="center-btn" title="Center the subject">
+                  <i class="fa-solid fa-crosshairs"></i><span>Center</span>
+                </button>
+                <button type="button" class="tool-btn" id="flip-btn" title="Flip horizontally">
+                  <i class="fa-solid fa-left-right"></i><span>Flip</span>
+                </button>
+              </div>
+              <button type="button" class="tool-btn" id="reset-btn" title="Reset all edits">
+                <i class="fa-solid fa-rotate-left"></i><span>Reset</span>
+              </button>
+            </div>
+
+            <div class="stage-area" id="stage-area">
+              <div class="canvas-holder" id="canvas-holder" hidden>
+                <canvas id="editor-canvas"></canvas>
+              </div>
+
+              <img class="compare-img" id="compare-img" alt="Original photo" hidden>
+
+              <!-- Loading -->
+              <div class="stage-state" id="stage-loading" hidden>
+                <div class="scan-preview">
+                  <img id="loading-preview" alt="">
+                  <div class="scan-line"></div>
+                </div>
+                <div class="stage-state-text">
+                  <p class="stage-state-title"><i class="fa-solid fa-circle-notch fa-spin"></i> <span id="loading-text">Removing background…</span></p>
+                  <p class="muted">This usually takes a few seconds.</p>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" id="cancel-btn">Cancel</button>
+              </div>
+
+              <!-- Error -->
+              <div class="stage-state" id="stage-error" hidden>
+                <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="stage-state-text">
+                  <p class="stage-state-title" id="error-title">Something went wrong</p>
+                  <p class="muted" id="error-message"></p>
+                </div>
+                <div class="error-actions" id="error-actions"></div>
+              </div>
+            </div>
+
+            <p class="stage-hint"><i class="fa-regular fa-hand-pointer"></i> Drag to move · corner handles to resize · top handle to rotate</p>
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="card sidebar" id="sidebar" aria-label="Editing options">
+            <!-- Background -->
+            <div class="panel">
+              <h3 class="panel-title"><i class="fa-solid fa-fill-drip"></i> Background</h3>
+              <div class="panel-note" id="bg-note" hidden>
+                <p>The background hasn't been removed, so these options won't be visible.</p>
+                <button type="button" class="link-btn" id="retry-removal-btn">Remove background</button>
+              </div>
+              <div class="swatches" id="swatches" role="radiogroup" aria-label="Background">
+                <button type="button" class="swatch swatch-transparent active" data-bg="transparent" role="radio" aria-checked="true" title="Transparent" aria-label="Transparent"></button>
+                <button type="button" class="swatch" data-bg="#ffffff" style="--c:#ffffff" role="radio" aria-checked="false" title="White" aria-label="White"></button>
+                <button type="button" class="swatch" data-bg="#f1f5f9" style="--c:#f1f5f9" role="radio" aria-checked="false" title="Light grey" aria-label="Light grey"></button>
+                <button type="button" class="swatch" data-bg="#dbeafe" style="--c:#dbeafe" role="radio" aria-checked="false" title="Light blue" aria-label="Light blue"></button>
+                <button type="button" class="swatch" data-bg="#2563eb" style="--c:#2563eb" role="radio" aria-checked="false" title="Passport blue" aria-label="Passport blue"></button>
+                <button type="button" class="swatch" data-bg="#1e3a8a" style="--c:#1e3a8a" role="radio" aria-checked="false" title="Navy" aria-label="Navy"></button>
+                <button type="button" class="swatch" data-bg="#dc2626" style="--c:#dc2626" role="radio" aria-checked="false" title="Red" aria-label="Red"></button>
+                <button type="button" class="swatch" data-bg="#111827" style="--c:#111827" role="radio" aria-checked="false" title="Black" aria-label="Black"></button>
+                <label class="swatch swatch-custom" title="Custom colour" aria-label="Custom colour">
+                  <input type="color" id="custom-color" value="#22c55e">
+                </label>
+              </div>
+              <div class="bg-extra">
+                <button type="button" class="chip-btn" data-bg="blur" id="blur-bg-btn"><i class="fa-solid fa-droplet"></i> Blur original</button>
+                <button type="button" class="chip-btn" id="bg-image-btn"><i class="fa-regular fa-image"></i> Use an image</button>
+                <input type="file" id="bg-image-input" accept="image/*" hidden>
+              </div>
+            </div>
+
+            <!-- Size -->
+            <div class="panel">
+              <h3 class="panel-title"><i class="fa-solid fa-crop-simple"></i> Size</h3>
+              <label class="sr-only" for="size-select">Output size</label>
+              <div class="select-wrap">
+                <select id="size-select" class="input">
+                  <optgroup label="General">
+                    <option value="original" selected>Original size</option>
+                    <option value="trim">Trim to subject</option>
+                  </optgroup>
+                  <optgroup label="Passport &amp; ID photos">
+                    <option value="passport-us">US / India passport — 2 × 2 in</option>
+                    <option value="passport-eu">UK / EU / Schengen — 35 × 45 mm</option>
+                    <option value="passport-ca">Canada — 50 × 70 mm</option>
+                    <option value="passport-cn">China visa — 33 × 48 mm</option>
+                  </optgroup>
+                  <optgroup label="Social &amp; web">
+                    <option value="social-square">Square post — 1080 × 1080</option>
+                    <option value="social-portrait">Portrait post — 1080 × 1350</option>
+                    <option value="social-story">Story / Reel — 1080 × 1920</option>
+                    <option value="profile">Profile picture — 800 × 800</option>
+                    <option value="youtube">YouTube thumbnail — 1280 × 720</option>
+                    <option value="product">Product photo — 2000 × 2000</option>
+                  </optgroup>
+                  <optgroup label="Other">
+                    <option value="custom">Custom size…</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="custom-size" id="custom-size" hidden>
+                <label>W <input type="number" class="input" id="custom-w" min="16" max="8000" value="1080" inputmode="numeric"></label>
+                <span aria-hidden="true">×</span>
+                <label>H <input type="number" class="input" id="custom-h" min="16" max="8000" value="1080" inputmode="numeric"></label>
+                <span class="muted">px</span>
+              </div>
+              <p class="help-text" id="size-info"></p>
+            </div>
+
+            <!-- Subject -->
+            <div class="panel">
+              <h3 class="panel-title"><i class="fa-solid fa-user"></i> Subject</h3>
+              <div class="range-row">
+                <label for="zoom-range">Zoom</label>
+                <input type="range" id="zoom-range" min="10" max="300" value="100" step="1">
+                <output id="zoom-value" for="zoom-range">100%</output>
+              </div>
+            </div>
+
+            <!-- Export -->
+            <div class="panel panel-export">
+              <h3 class="panel-title"><i class="fa-solid fa-file-export"></i> Download</h3>
+              <div class="segmented" id="format-group" role="radiogroup" aria-label="File format">
+                <button type="button" class="seg-btn active" data-format="png" role="radio" aria-checked="true">PNG</button>
+                <button type="button" class="seg-btn" data-format="jpeg" role="radio" aria-checked="false">JPG</button>
+                <button type="button" class="seg-btn" data-format="webp" role="radio" aria-checked="false">WEBP</button>
+                <button type="button" class="seg-btn" data-format="avif" role="radio" aria-checked="false" hidden>AVIF</button>
+                <button type="button" class="seg-btn" data-format="bmp" role="radio" aria-checked="false">BMP</button>
+              </div>
+              <p class="help-text" id="format-note"></p>
+
+              <div class="range-row" id="quality-row" hidden>
+                <label for="quality-range">Quality</label>
+                <input type="range" id="quality-range" min="50" max="100" value="92" step="1">
+                <output id="quality-value" for="quality-range">92%</output>
+              </div>
+
+              <div class="field-label">Resolution</div>
+              <div class="segmented" id="scale-group" role="radiogroup" aria-label="Resolution">
+                <button type="button" class="seg-btn" data-scale="0.5" role="radio" aria-checked="false">0.5×</button>
+                <button type="button" class="seg-btn active" data-scale="1" role="radio" aria-checked="true">1×</button>
+                <button type="button" class="seg-btn" data-scale="2" role="radio" aria-checked="false">2×</button>
+              </div>
+              <p class="help-text" id="output-info"></p>
+
+              <button type="button" class="btn btn-primary btn-block btn-lg" id="download-btn" disabled>
+                <i class="fa-solid fa-download"></i> <span>Download PNG</span>
+              </button>
+              <div class="export-secondary">
+                <button type="button" class="btn btn-ghost btn-sm" id="copy-btn" disabled><i class="fa-regular fa-copy"></i> Copy</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="sheet-btn" disabled title="Several copies on a 4 × 6 in photo paper sheet"><i class="fa-solid fa-print"></i> 4×6 print sheet</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section id="how" class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">How it works</span>
+          <h2>Three steps. No design skills needed.</h2>
+        </div>
+        <div class="steps">
+          <div class="step card">
+            <span class="step-num">1</span>
+            <h3>Upload</h3>
+            <p>Choose a photo, drag it in, or paste it straight from your clipboard.</p>
+          </div>
+          <div class="step card">
+            <span class="step-num">2</span>
+            <h3>Edit</h3>
+            <p>The background is removed automatically. Pick a new background and size.</p>
+          </div>
+          <div class="step card">
+            <span class="step-num">3</span>
+            <h3>Download</h3>
+            <p>Save as PNG, JPG, WEBP or BMP, or print several passport photos on one sheet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEATURES ================= -->
+    <section id="features" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Features</span>
+          <h2>Everything you need for a perfect photo</h2>
+        </div>
+        <div class="features">
+          <div class="feature card">
+            <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h3>AI background removal</h3>
+            <p>Clean, accurate cutouts of people, products, pets and more — hair and edges included.</p>
+          </div>
+          <div class="feature card">
+            <div class="feature-icon"><i class="fa-solid fa-id-card"></i></div>
+            <h3>Passport &amp; visa sizes</h3>
+            <p>US, India, UK, EU, Canada and China formats at 300 DPI, with smart head positioning.</p>
+          </div>
+          <div class="feature card">
+            <div class="feature-icon"><i class="fa-solid fa-palette"></i></div>
+            <h3>Any background</h3>
+            <p>Transparent, solid colours, a blurred version of the original, or your own image.</p>
+          </div>
+          <div class="feature card">
+            <div class="feature-icon"><i class="fa-solid fa-file-image"></i></div>
+            <h3>Every common format</h3>
+            <p>PNG with transparency, JPG, WEBP and BMP — with quality and resolution control.</p>
+          </div>
+          <div class="feature card">
+            <div class="feature-icon"><i class="fa-solid fa-print"></i></div>
+            <h3>Print-ready sheets</h3>
+            <p>Get several passport photos on a standard 4 × 6 in sheet, ready for any photo printer.</p>
+          </div>
+          <div class="feature card">
+            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Private by design</h3>
+            <p>Editing and exporting happen in your browser. We don't store your photos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section id="faq" class="section">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <span class="eyebrow">FAQ</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Is BackgroundBlaster free?</summary>
+            <p>Yes. The site uses a shared monthly quota for AI background removal. If it runs out, you can add your own free remove.bg API key under <button type="button" class="link-btn" data-action="open-settings">API settings</button> and keep going.</p>
+          </details>
+          <details>
+            <summary>Which formats can I download?</summary>
+            <p>PNG (keeps transparency), JPG, WEBP and BMP — plus AVIF in browsers that support it. You can also download a 4 × 6 in print sheet with several copies of your photo.</p>
+          </details>
+          <details>
+            <summary>Will my passport photo be accepted?</summary>
+            <p>We size photos to the official dimensions at 300 DPI and position the head automatically, but every country has its own rules about background colour, expression, glasses and lighting. Always check the official requirements before submitting.</p>
+          </details>
+          <details>
+            <summary>What happens to my photos?</summary>
+            <p>Your photo is sent securely to remove.bg only to cut out the background. All editing, resizing and exporting happens locally in your browser — nothing is stored on our side.</p>
+          </details>
+          <details>
+            <summary>How do I get the best result?</summary>
+            <p>Use a well-lit, sharp photo where the subject is clearly separated from the background. For passport photos, face the camera directly with your shoulders visible.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section id="about" class="section section-alt">
+      <div class="container">
+        <div class="card about-card">
+          <img src="BackgroundBlaster.png" alt="BackgroundBlaster logo" class="about-logo" width="160" height="160" loading="lazy">
           <div class="about-text">
-            <h2>About BackgroundBlaster</h2>
-            <p>BackgroundBlaster is a cutting-edge tool designed to make image editing effortless. Whether you're a professional designer or just looking to create a quick passport photo for official use, our AI-powered background removal and professional editor provides pixel-perfect results in seconds.</p>
-            <p>Created with passion by <strong>Akash Mandal</strong>, blending stunning visuals with powerful utility.</p>
-            
-            <div class="social-handles">
-              <span class="follow-text">Connect with me:</span>
-              <a href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-              <a href="https://twitter.com/akashma36499324" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
-              <a href="https://instagram.com/@photos_by_akash" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <span class="eyebrow">About</span>
+            <h2>Built to make photo editing effortless</h2>
+            <p>BackgroundBlaster helps anyone get a clean, professional photo in seconds — whether it's a passport photo, a profile picture or a product shot for your store.</p>
+            <p>Created by <strong>Akash Mandal</strong>.</p>
+            <div class="socials">
+              <a href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://twitter.com/akashma36499324" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+              <a href="https://www.instagram.com/photos_by_akash/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="contact-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Get In Touch</h2>
-        <p>Have a question or feedback? We'd love to hear from you.</p>
-      </div>
-
-      <div class="glass-card contact-card">
-        <form id="contactForm">
-          <div class="form-group">
-            <label for="name">Your Name</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-user input-icon"></i>
-              <input type="text" id="name" name="name" placeholder="John Doe" required>
+    <!-- ================= CONTACT ================= -->
+    <section id="contact" class="section">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <span class="eyebrow">Contact</span>
+          <h2>Get in touch</h2>
+          <p class="muted">Questions, feedback or a feature request? Send a message.</p>
+        </div>
+        <form id="contact-form" class="card contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="c-name">Name</label>
+              <input type="text" id="c-name" class="input" name="name" autocomplete="name" placeholder="Your name" required>
+            </div>
+            <div class="form-field">
+              <label for="c-email">Email</label>
+              <input type="email" id="c-email" class="input" name="email" autocomplete="email" placeholder="you@example.com" required>
             </div>
           </div>
-          <div class="form-group">
-            <label for="email">Your Email</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-envelope input-icon"></i>
-              <input type="email" id="email" name="email" placeholder="john@example.com" required>
-            </div>
+          <div class="form-field">
+            <label for="c-message">Message</label>
+            <textarea id="c-message" class="input" name="message" rows="5" placeholder="How can we help?" required></textarea>
           </div>
-          <div class="form-group">
-            <label for="message">Message</label>
-            <div class="input-wrapper align-top">
-              <i class="fa-solid fa-comment input-icon"></i>
-              <textarea id="message" name="message" rows="4" placeholder="How can we help you?" required></textarea>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+          <button type="submit" class="btn btn-primary btn-lg"><i class="fa-solid fa-paper-plane"></i> Send message</button>
+          <p class="help-text">This opens your email app with the message ready to send.</p>
         </form>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <!-- Footer -->
+  <!-- ================= FOOTER ================= -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <img src="BackgroundBlaster.png" alt="Logo" width="30">
-          <span>BackgroundBlaster</span>
-        </div>
-        <div class="footer-links">
-          <a href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank"><i class="fab fa-facebook"></i></a>
-          <a href="https://twitter.com/akashma36499324" target="_blank"><i class="fab fa-twitter"></i></a>
-          <a href="https://instagram.com/@photos_by_akash" target="_blank"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 BackgroundBlaster by Akash Mandal. All rights reserved.</p>
+    <div class="container footer-inner">
+      <a href="#home" class="brand">
+        <img src="BackgroundBlaster.png" alt="" class="brand-logo" width="28" height="28">
+        <span class="brand-name">Background<span>Blaster</span></span>
+      </a>
+      <p class="muted">&copy; <span id="year">2026</span> BackgroundBlaster by Akash Mandal. Background removal powered by remove.bg.</p>
+      <div class="socials socials-sm">
+        <a href="https://www.facebook.com/profile.php?id=100041998442913" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com/akashma36499324" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.instagram.com/photos_by_akash/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </footer>
 
-  <!-- Notification Toast -->
-  <div id="toast" class="toast hidden">
-    <i id="toast-icon" class="fa-solid fa-circle-info"></i>
-    <span id="toast-message">Notification message</span>
+  <!-- ================= SETTINGS DIALOG ================= -->
+  <dialog id="settings-dialog" class="dialog" aria-labelledby="settings-title">
+    <form method="dialog" class="dialog-inner" id="settings-form">
+      <div class="dialog-head">
+        <h2 id="settings-title"><i class="fa-solid fa-key"></i> API settings</h2>
+        <button type="button" class="icon-btn" id="settings-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="muted">Background removal is powered by <strong>remove.bg</strong>. The built-in key has a small free quota shared by all visitors. Add your own free key for a personal quota — or buy credits for full-HD results.</p>
+
+      <div class="quota-box" id="quota-box">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="quota-text">Checking quota…</span>
+      </div>
+
+      <label for="api-key-input" class="field-label">Your remove.bg API key</label>
+      <div class="key-input-wrap">
+        <input type="password" id="api-key-input" class="input" placeholder="Paste your API key" autocomplete="off" spellcheck="false">
+        <button type="button" class="icon-btn" id="toggle-key-btn" aria-label="Show key"><i class="fa-regular fa-eye"></i></button>
+      </div>
+      <p class="help-text">Stored only in this browser. <a href="https://www.remove.bg/dashboard#api-key" target="_blank" rel="noopener">Get a free key <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
+      <p class="form-error" id="key-error" hidden></p>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="remove-key-btn">Use built-in key</button>
+        <button type="button" class="btn btn-primary" id="save-key-btn">Save key</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Drop overlay -->
+  <div class="drop-overlay" id="drop-overlay" hidden>
+    <div class="drop-overlay-inner">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <p>Drop your image anywhere</p>
+    </div>
   </div>
 
+  <!-- Hidden main file input -->
+  <input type="file" id="file-input" accept="image/*" hidden>
+
+  <!-- Toasts -->
+  <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
